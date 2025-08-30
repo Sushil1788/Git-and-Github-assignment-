@@ -11,7 +11,9 @@
 7. Command to install apk from pc to emulator:- adb install "C:\Users\w3villa\Documents\Testing APKs\Car.apk"
 8. Command to run pythn code with root cause:- python -m tests.test_onboarding
 
+9. Change code
 
+///
 
 from appium import webdriver
 from appium.options.android import UiAutomator2Options
