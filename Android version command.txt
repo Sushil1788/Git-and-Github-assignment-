@@ -1,0 +1,137 @@
+1. adb shell getprop ro.build.version.release   ( command used to find emulator android version )
+2. SystemPropertiesAdvanced       ( command to run environment varibale by open cmd as administrator )
+3. ctrl + k after that ctrl + c   ( comment multiline in python code in vs code )
+4. ctrl + k after that ctrl + u   ( uncomment multiline in python code in vs code )
+5. appPackage and appctivity id required when we use inbuilt app test but in apk dont required this.
+6. To find appactivity and app package name run this command in cmd ( First open app in emulator ).
+    command :- adb shell dumpsys window | find "mCurrentFocus"
+    for example:- we get like this:- mCurrentFocus=Window{64fc05d u0 com.miui.calculator/com.miui.calculator.cal.CalculatorActivity}
+
+    
+7. Command to install apk from pc to emulator:- adb install "C:\Users\w3villa\Documents\Testing APKs\Car.apk"
+8. Command to run pythn code with root cause:- python -m tests.test_onboarding
+
+
+
+from appium import webdriver
+from appium.options.android import UiAutomator2Options
+from appium.webdriver.common.appiumby import AppiumBy
+
+# Appium options for MIUI Calculator app
+options = UiAutomator2Options()
+options.platform_name = "Android"
+options.device_name = "emulator-5554"
+options.automation_name = "UiAutomator2"
+#options.app = "C:\\Users\\w3villa\\Documents\\Testing APKs\\Calculator.apk"
+options.app_package = "com.miui.calculator"
+options.app_activity = "com.miui.calculator.cal.CalculatorActivity"
+options.app_wait_activity = "com.miui.calculator.*"
+options.auto_grant_permissions = True
+options.no_reset = True
+
+driver = webdriver.Remote("http://localhost:4723", options=options)
+driver.implicitly_wait(10)
+
+def tap(id):
+    driver.find_element(AppiumBy.ID, id).click()
+
+def print_result(label):
+    result = driver.find_element(AppiumBy.ID, "com.miui.calculator:id/result").text
+    print(f"🧮 {label} = {result}")
+
+def clear():
+    try:
+        tap("com.miui.calculator:id/btn_c_s")
+    except:
+        try:
+            tap("com.miui.calculator:id/btn_ac_s")
+        except:
+            pass
+
+try:
+    # Addition: 7 + 5
+    tap("com.miui.calculator:id/btn_7_s")
+    tap("com.miui.calculator:id/btn_plus_s")
+    tap("com.miui.calculator:id/btn_5_s")
+    tap("com.miui.calculator:id/btn_equal_s")
+    print_result("7 + 5")
+    clear()
+
+    # Subtraction: 9 - 2
+    tap("com.miui.calculator:id/btn_9_s")
+    tap("com.miui.calculator:id/btn_minus_s")
+    tap("com.miui.calculator:id/btn_2_s")
+    tap("com.miui.calculator:id/btn_equal_s")
+    print_result("9 - 2")
+    clear()
+
+    # Multiplication: 6 × 3
+    tap("com.miui.calculator:id/btn_6_s")
+    tap("com.miui.calculator:id/btn_mul_s")
+    tap("com.miui.calculator:id/btn_3_s")
+    tap("com.miui.calculator:id/btn_equal_s")
+    print_result("6 × 3")
+    clear()
+
+    # Division: 8 ÷ 4
+    tap("com.miui.calculator:id/btn_8_s")
+    tap("com.miui.calculator:id/btn_div_s")
+    tap("com.miui.calculator:id/btn_4_s")
+    tap("com.miui.calculator:id/btn_equal_s")
+    print_result("8 ÷ 4")
+    clear()
+
+    # Division by 0
+    tap("com.miui.calculator:id/btn_9_s")
+    tap("com.miui.calculator:id/btn_div_s")
+    tap("com.miui.calculator:id/btn_0_s")
+    tap("com.miui.calculator:id/btn_equal_s")
+    print_result("9 ÷ 0")
+    clear()
+
+    # Percentage: 50 %
+    tap("com.miui.calculator:id/btn_5_s")
+    tap("com.miui.calculator:id/btn_0_s")
+    tap("com.miui.calculator:id/btn_percent_s")
+    print_result("50%")
+    clear()
+
+    # # Toggle sign: -7
+    # tap("com.miui.calculator:id/btn_7_s")
+    # tap("com.miui.calculator:id/btn_toggle_sign_s")
+    # print_result("Toggle sign of 7")
+    # clear()
+
+    # Decimal: 3.5 + 2.1
+    tap("com.miui.calculator:id/btn_3_s")
+    tap("com.miui.calculator:id/btn_dot_s")
+    tap("com.miui.calculator:id/btn_5_s")
+    tap("com.miui.calculator:id/btn_plus_s")
+    tap("com.miui.calculator:id/btn_2_s")
+    tap("com.miui.calculator:id/btn_dot_s")
+    tap("com.miui.calculator:id/btn_1_s")
+    tap("com.miui.calculator:id/btn_equal_s")
+    print_result("3.5 + 2.1")
+    clear()
+
+    # ✅ Reveal scientific panel first before using √
+    try:
+        tap("com.miui.calculator:id/btn_switch")  # Adjust this ID using Appium Inspector if needed
+        print("🔁 Toggled scientific mode")
+    except:
+        print("⚠️ Could not find scientific mode toggle, maybe it's already open")
+
+    # Square root of 16
+    tap("com.miui.calculator:id/btn_sqrt")  # Confirm this ID with Appium Inspector
+    tap("com.miui.calculator:id/btn_1_s")
+    tap("com.miui.calculator:id/btn_6_s")
+    print_result("√16")
+    clear()
+
+except Exception as e:
+    print("❌ Test failed:", e)
+
+finally:
+    driver.quit()
+
+
